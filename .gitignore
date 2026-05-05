@@ -1,0 +1,9 @@
+# Claude
+.claude/*
+
+!.claude/rules
+!.claude/skills
+!.claude/settings*.json
+
+# Devcontainer
+.devcontainer/devcontainer-lock.json
