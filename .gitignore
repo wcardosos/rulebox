@@ -2,7 +2,6 @@
 .claude/*
 
 !.claude/rules
-!.claude/skills
 !.claude/settings*.json
 
 # Devcontainer

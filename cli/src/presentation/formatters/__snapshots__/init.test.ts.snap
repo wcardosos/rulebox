@@ -1,0 +1,27 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`formatInitResult > ALREADY_INITIALIZED 1`] = `
+"rulebox.json already exists in this directory.
+"
+`;
+
+exports[`formatInitResult > INVALID_OUTPUT 1`] = `
+"Invalid --output value: must not be absolute
+"
+`;
+
+exports[`formatInitResult > IO_ERROR with cause 1`] = `
+"I/O error: Disk full (ENOSPC)
+"
+`;
+
+exports[`formatInitResult > success dir already existed 1`] = `
+"✓ Created rulebox.json
+"
+`;
+
+exports[`formatInitResult > success with new dir 1`] = `
+"✓ Created rulebox.json
+✓ Created .rules/
+"
+`;
