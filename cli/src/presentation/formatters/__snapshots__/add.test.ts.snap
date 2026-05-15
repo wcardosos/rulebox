@@ -1,0 +1,63 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`formatAddResult > CONFIG_NOT_FOUND 1`] = `
+"rulebox.json not found. Run \`rulebox init\` first.
+"
+`;
+
+exports[`formatAddResult > INVALID_CONFIG_JSON 1`] = `
+"Invalid JSON in rulebox.json: Unexpected token at line 3
+"
+`;
+
+exports[`formatAddResult > INVALID_CONFIG_SCHEMA 1`] = `
+"Invalid rulebox.json schema: version must be '1'
+"
+`;
+
+exports[`formatAddResult > IO_ERROR_WRITE_CONFIG — rolled back 1`] = `
+"Failed to write rulebox.json: ENOSPC
+Rolled back all changes.
+"
+`;
+
+exports[`formatAddResult > IO_ERROR_WRITE_RULES — rollback partially failed 1`] = `
+"Failed to write rule files: EIO
+Rollback incomplete. The following paths may be in an inconsistent state:
+  - /project/.rules/a.md (EIO)
+"
+`;
+
+exports[`formatAddResult > IO_ERROR_WRITE_RULES — rolled back, no partial failures 1`] = `
+"Failed to write rule files: EACCES: permission denied
+Rolled back all changes.
+"
+`;
+
+exports[`formatAddResult > NO_RULES_GIVEN 1`] = `
+"At least one rule is required. Usage: rulebox add <rule>...
+"
+`;
+
+exports[`formatAddResult > OUTPUT_DIR_NOT_FOUND 1`] = `
+"Output directory not found: /project/.rules
+"
+`;
+
+exports[`formatAddResult > UNKNOWN_RULES 1`] = `
+"Unknown rule(s):
+  - foo/bar
+  - baz/qux
+"
+`;
+
+exports[`formatAddResult > success — mixed Added and Updated, order preserved 1`] = `
+"✓ Updated nextjs/app-router
+✓ Added drizzle/sqlite
+"
+`;
+
+exports[`formatAddResult > success — single Added 1`] = `
+"✓ Added nextjs/app-router
+"
+`;
