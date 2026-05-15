@@ -2,17 +2,17 @@ import pc from 'picocolors';
 
 export const theme = {
   success: pc.green,
-  error:   pc.red,
+  error: pc.red,
   warning: pc.yellow,
-  dim:     pc.dim,
-  label:   pc.cyan,
+  dim: pc.dim,
+  label: pc.cyan,
   symbols: {
-    ok:           '✓',
-    err:          '✗',
-    question:     '?',
-    diamond:      '◆',
+    ok: '✓',
+    err: '✗',
+    question: '?',
+    diamond: '◆',
     diamondEmpty: '◇',
-    warn:         '▲',
-    bar:          '│',
+    warn: '▲',
+    bar: '│',
   },
 } as const;

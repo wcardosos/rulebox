@@ -78,6 +78,7 @@ domain/      infrastructure/   (infrastructure depends on domain)
 ```
 cli/src/
 ├── index.tsx
+├── shared/           error-codes.ts
 ├── domain/           config.ts, rule.ts, package-meta.ts, result.ts
 ├── infrastructure/   config-repository.ts, registry-repository.ts, composer.ts, fs-utils.ts, tty.ts
 ├── application/      add.ts, init.ts, install.ts, remove.ts, list.ts, update.ts
@@ -92,6 +93,8 @@ cli/src/
 
 ### Layer responsibilities and import rules
 
+**`shared/`** — pure utilities and cross-cutting constants with no dependencies on other layers. May only import Node builtins (pure ones) and pure libraries. May not import from `domain/`, `infrastructure/`, `application/`, `presentation/`, or `cli/`. Every other layer may import from here. Currently contains only `error-codes.ts` (single source of truth for `ERROR_CODES` and the `ErrorCode` type).
+
 **`domain/`** — types, zod schemas, pure rules. No I/O. May only import Node builtins (pure ones) and pure libraries like zod. May not import from any other layer.
 
 - `config.ts` — `Config` type, zod schema, constants (`CONFIG_VERSION`, `DEFAULT_OUTPUT`).
@@ -99,7 +102,6 @@ cli/src/
 - `package-meta.ts` — `PackageMeta` type and zod schema for `package.yml`.
 - `result.ts` — generic `Result<T, E>` discriminated union (`{ kind: 'ok', value } | { kind: 'error', error }`), helpers `ok()` / `err()`.
 - Zod schemas live here because they describe domain invariants, not parsing details.
-- **Do not** create a central `domain/errors.ts` yet. Keep error codes local to each use case until duplication forces consolidation.
 
 **`infrastructure/`** — concrete adapters for the outside world (filesystem, environment). May import from `domain/`. May not import from `application/`, `presentation/`, or `cli/`.
 
@@ -213,7 +215,6 @@ These were explicitly deferred. Do not introduce them without an explicit reques
 
 - Plain (non-Ink) renderer for CI/pipes.
 - Biome lint rule enforcing layer dependency direction.
-- A central `domain/errors.ts`.
 - A separate `@rulebox/registry` package.
 - pnpm workspaces, Turborepo, Nx, or any monorepo tool.
 - `--json` or `--plain` output flags.
