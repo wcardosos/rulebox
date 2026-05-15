@@ -1,12 +1,12 @@
-import { randomUUID } from "node:crypto";
-import { promises as fs } from "node:fs";
-import path from "node:path";
+import { randomUUID } from 'node:crypto';
+import { promises as fs } from 'node:fs';
+import path from 'node:path';
 
 export async function writeAtomic(filePath: string, content: string): Promise<void> {
   const dir = path.dirname(filePath);
   const tmp = path.join(dir, `.tmp-${randomUUID()}`);
   try {
-    await fs.writeFile(tmp, content, "utf8");
+    await fs.writeFile(tmp, content, 'utf8');
     await fs.rename(tmp, filePath);
   } catch (e) {
     await fs.unlink(tmp).catch(() => undefined);

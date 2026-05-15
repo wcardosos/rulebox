@@ -11,13 +11,18 @@ export function formatInitResult(result: InitResult): { stdout: string; stderr: 
   }
   switch (result.code) {
     case 'ALREADY_INITIALIZED':
-      return { stdout: '', stderr: theme.error('rulebox.json already exists in this directory.') + '\n' };
+      return {
+        stdout: '',
+        stderr: theme.error('rulebox.json already exists in this directory.') + '\n',
+      };
     case 'INVALID_OUTPUT':
       return { stdout: '', stderr: theme.error(`Invalid --output value: ${result.reason}`) + '\n' };
     case 'IO_ERROR':
       return {
         stdout: '',
-        stderr: theme.error(`I/O error: ${result.message}${result.cause ? ` (${result.cause})` : ''}`) + '\n',
+        stderr:
+          theme.error(`I/O error: ${result.message}${result.cause ? ` (${result.cause})` : ''}`) +
+          '\n',
       };
   }
 }

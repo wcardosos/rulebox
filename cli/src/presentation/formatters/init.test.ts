@@ -21,13 +21,22 @@ describe('formatInitResult', () => {
   });
 
   it('INVALID_OUTPUT', () => {
-    const out = formatInitResult({ kind: 'error', code: 'INVALID_OUTPUT', reason: 'must not be absolute' });
+    const out = formatInitResult({
+      kind: 'error',
+      code: 'INVALID_OUTPUT',
+      reason: 'must not be absolute',
+    });
     expect(out.stdout).toBe('');
     expect(out.stderr).toMatchSnapshot();
   });
 
   it('IO_ERROR with cause', () => {
-    const out = formatInitResult({ kind: 'error', code: 'IO_ERROR', message: 'Disk full', cause: 'ENOSPC' });
+    const out = formatInitResult({
+      kind: 'error',
+      code: 'IO_ERROR',
+      message: 'Disk full',
+      cause: 'ENOSPC',
+    });
     expect(out.stdout).toBe('');
     expect(out.stderr).toMatchSnapshot();
   });
