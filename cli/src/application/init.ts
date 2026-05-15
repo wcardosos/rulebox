@@ -1,6 +1,7 @@
 import path from 'node:path';
 import type { Config } from '../domain/config';
 import { CONFIG_VERSION, DEFAULT_OUTPUT } from '../domain/config';
+import { ERROR_CODES } from '../shared/error-codes';
 
 export type InitArgs = {
   output?: string;
@@ -15,9 +16,9 @@ export type InitDeps = {
 
 export type InitResult =
   | { kind: 'success'; dirCreated: boolean; output: string }
-  | { kind: 'error'; code: 'ALREADY_INITIALIZED' }
-  | { kind: 'error'; code: 'INVALID_OUTPUT'; reason: string }
-  | { kind: 'error'; code: 'IO_ERROR'; message: string; cause?: string };
+  | { kind: 'error'; code: typeof ERROR_CODES.ALREADY_INITIALIZED }
+  | { kind: 'error'; code: typeof ERROR_CODES.INVALID_OUTPUT; reason: string }
+  | { kind: 'error'; code: typeof ERROR_CODES.IO_ERROR; message: string; cause?: string };
 
 export async function initCore(args: InitArgs, deps: InitDeps): Promise<InitResult> {
   const output = args.output ?? DEFAULT_OUTPUT;
@@ -25,12 +26,12 @@ export async function initCore(args: InitArgs, deps: InitDeps): Promise<InitResu
   if (args.output !== undefined) {
     const reason = validateOutput(args.output, deps.cwd);
     if (reason !== null) {
-      return { kind: 'error', code: 'INVALID_OUTPUT', reason };
+      return { kind: 'error', code: ERROR_CODES.INVALID_OUTPUT, reason };
     }
   }
 
   if (await deps.configExists(deps.cwd)) {
-    return { kind: 'error', code: 'ALREADY_INITIALIZED' };
+    return { kind: 'error', code: ERROR_CODES.ALREADY_INITIALIZED };
   }
 
   const resolvedOutput = path.resolve(deps.cwd, output);
@@ -78,5 +79,10 @@ function validateOutput(output: string, cwd: string): string | null {
 
 function toIoError(e: unknown): InitResult {
   const node = e as NodeJS.ErrnoException;
-  return { kind: 'error', code: 'IO_ERROR', message: node.message ?? String(e), cause: node.code };
+  return {
+    kind: 'error',
+    code: ERROR_CODES.IO_ERROR,
+    message: node.message ?? String(e),
+    cause: node.code,
+  };
 }

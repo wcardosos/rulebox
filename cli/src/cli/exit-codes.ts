@@ -1,31 +1,20 @@
-export type ErrorCode =
-  | 'ALREADY_INITIALIZED'
-  | 'INVALID_OUTPUT'
-  | 'IO_ERROR'
-  | 'NO_RULES_GIVEN'
-  | 'CONFIG_NOT_FOUND'
-  | 'INVALID_CONFIG_JSON'
-  | 'INVALID_CONFIG_SCHEMA'
-  | 'OUTPUT_DIR_NOT_FOUND'
-  | 'UNKNOWN_RULES'
-  | 'IO_ERROR_WRITE_RULES'
-  | 'IO_ERROR_WRITE_CONFIG';
+import { ERROR_CODES, type ErrorCode } from '../shared/error-codes';
 
 export function exitCodeFor(code: ErrorCode): number {
   switch (code) {
-    case 'ALREADY_INITIALIZED':
-    case 'INVALID_OUTPUT':
-    case 'NO_RULES_GIVEN':
-    case 'CONFIG_NOT_FOUND':
-    case 'INVALID_CONFIG_JSON':
-    case 'INVALID_CONFIG_SCHEMA':
-    case 'OUTPUT_DIR_NOT_FOUND':
+    case ERROR_CODES.ALREADY_INITIALIZED:
+    case ERROR_CODES.INVALID_OUTPUT:
+    case ERROR_CODES.NO_RULES_GIVEN:
+    case ERROR_CODES.CONFIG_NOT_FOUND:
+    case ERROR_CODES.INVALID_CONFIG_JSON:
+    case ERROR_CODES.INVALID_CONFIG_SCHEMA:
+    case ERROR_CODES.OUTPUT_DIR_NOT_FOUND:
       return 2;
-    case 'UNKNOWN_RULES':
+    case ERROR_CODES.UNKNOWN_RULES:
       return 3;
-    case 'IO_ERROR':
-    case 'IO_ERROR_WRITE_RULES':
-    case 'IO_ERROR_WRITE_CONFIG':
+    case ERROR_CODES.IO_ERROR:
+    case ERROR_CODES.IO_ERROR_WRITE_RULES:
+    case ERROR_CODES.IO_ERROR_WRITE_CONFIG:
       return 4;
   }
 }

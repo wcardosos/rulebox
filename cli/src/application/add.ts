@@ -3,6 +3,7 @@ import type { Config } from '../domain/config';
 import type { Result } from '../domain/result';
 import { isValidRuleName, ruleNameToFilename } from '../domain/rule';
 import type { ReadConfigError } from '../infrastructure/config-repository';
+import { ERROR_CODES } from '../shared/error-codes';
 
 export type AddArgs = {
   rules: string[];
@@ -25,22 +26,22 @@ export type RollbackFailure = { path: string; cause: string };
 
 export type AddResult =
   | { kind: 'success'; operations: AddOp[] }
-  | { kind: 'error'; code: 'NO_RULES_GIVEN' }
-  | { kind: 'error'; code: 'CONFIG_NOT_FOUND' }
-  | { kind: 'error'; code: 'INVALID_CONFIG_JSON'; details: string }
-  | { kind: 'error'; code: 'INVALID_CONFIG_SCHEMA'; details: string }
-  | { kind: 'error'; code: 'OUTPUT_DIR_NOT_FOUND'; path: string }
-  | { kind: 'error'; code: 'UNKNOWN_RULES'; rules: string[] }
+  | { kind: 'error'; code: typeof ERROR_CODES.NO_RULES_GIVEN }
+  | { kind: 'error'; code: typeof ERROR_CODES.CONFIG_NOT_FOUND }
+  | { kind: 'error'; code: typeof ERROR_CODES.INVALID_CONFIG_JSON; details: string }
+  | { kind: 'error'; code: typeof ERROR_CODES.INVALID_CONFIG_SCHEMA; details: string }
+  | { kind: 'error'; code: typeof ERROR_CODES.OUTPUT_DIR_NOT_FOUND; path: string }
+  | { kind: 'error'; code: typeof ERROR_CODES.UNKNOWN_RULES; rules: string[] }
   | {
       kind: 'error';
-      code: 'IO_ERROR_WRITE_RULES';
+      code: typeof ERROR_CODES.IO_ERROR_WRITE_RULES;
       message: string;
       rolledBack: boolean;
       partialRollbackFailures: RollbackFailure[];
     }
   | {
       kind: 'error';
-      code: 'IO_ERROR_WRITE_CONFIG';
+      code: typeof ERROR_CODES.IO_ERROR_WRITE_CONFIG;
       message: string;
       rolledBack: boolean;
       partialRollbackFailures: RollbackFailure[];
@@ -48,24 +49,24 @@ export type AddResult =
 
 export async function addCore(args: AddArgs, deps: AddDeps): Promise<AddResult> {
   if (args.rules.length === 0) {
-    return { kind: 'error', code: 'NO_RULES_GIVEN' };
+    return { kind: 'error', code: ERROR_CODES.NO_RULES_GIVEN };
   }
 
   const configResult = await deps.readConfig(deps.cwd);
   if (configResult.kind === 'error') {
     switch (configResult.error.kind) {
       case 'NOT_FOUND':
-        return { kind: 'error', code: 'CONFIG_NOT_FOUND' };
+        return { kind: 'error', code: ERROR_CODES.CONFIG_NOT_FOUND };
       case 'INVALID_JSON':
         return {
           kind: 'error',
-          code: 'INVALID_CONFIG_JSON',
+          code: ERROR_CODES.INVALID_CONFIG_JSON,
           details: configResult.error.details,
         };
       case 'INVALID_SCHEMA':
         return {
           kind: 'error',
-          code: 'INVALID_CONFIG_SCHEMA',
+          code: ERROR_CODES.INVALID_CONFIG_SCHEMA,
           details: configResult.error.details,
         };
     }
@@ -74,7 +75,7 @@ export async function addCore(args: AddArgs, deps: AddDeps): Promise<AddResult> 
 
   const outputDir = path.resolve(deps.cwd, config.output);
   if (!(await deps.outputDirExists(outputDir))) {
-    return { kind: 'error', code: 'OUTPUT_DIR_NOT_FOUND', path: outputDir };
+    return { kind: 'error', code: ERROR_CODES.OUTPUT_DIR_NOT_FOUND, path: outputDir };
   }
 
   const unknown: string[] = [];
@@ -84,7 +85,7 @@ export async function addCore(args: AddArgs, deps: AddDeps): Promise<AddResult> 
     }
   }
   if (unknown.length > 0) {
-    return { kind: 'error', code: 'UNKNOWN_RULES', rules: unknown };
+    return { kind: 'error', code: ERROR_CODES.UNKNOWN_RULES, rules: unknown };
   }
 
   const existingSet = new Set(config.rules);
@@ -117,7 +118,7 @@ export async function addCore(args: AddArgs, deps: AddDeps): Promise<AddResult> 
       const { rolledBack, failures } = await rollback(written, snapshots, deps);
       return {
         kind: 'error',
-        code: 'IO_ERROR_WRITE_RULES',
+        code: ERROR_CODES.IO_ERROR_WRITE_RULES,
         message: (e as Error).message ?? String(e),
         rolledBack,
         partialRollbackFailures: failures,
@@ -135,7 +136,7 @@ export async function addCore(args: AddArgs, deps: AddDeps): Promise<AddResult> 
     const { rolledBack, failures } = await rollback(written, snapshots, deps);
     return {
       kind: 'error',
-      code: 'IO_ERROR_WRITE_CONFIG',
+      code: ERROR_CODES.IO_ERROR_WRITE_CONFIG,
       message: (e as Error).message ?? String(e),
       rolledBack,
       partialRollbackFailures: failures,

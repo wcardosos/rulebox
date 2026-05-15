@@ -1,4 +1,5 @@
 import type { InitResult } from '../../application/init';
+import { ERROR_CODES } from '../../shared/error-codes';
 import { theme } from '../theme';
 
 export function formatInitResult(result: InitResult): { stdout: string; stderr: string } {
@@ -10,14 +11,14 @@ export function formatInitResult(result: InitResult): { stdout: string; stderr: 
     return { stdout: lines.join('\n') + '\n', stderr: '' };
   }
   switch (result.code) {
-    case 'ALREADY_INITIALIZED':
+    case ERROR_CODES.ALREADY_INITIALIZED:
       return {
         stdout: '',
         stderr: theme.error('rulebox.json already exists in this directory.') + '\n',
       };
-    case 'INVALID_OUTPUT':
+    case ERROR_CODES.INVALID_OUTPUT:
       return { stdout: '', stderr: theme.error(`Invalid --output value: ${result.reason}`) + '\n' };
-    case 'IO_ERROR':
+    case ERROR_CODES.IO_ERROR:
       return {
         stdout: '',
         stderr:

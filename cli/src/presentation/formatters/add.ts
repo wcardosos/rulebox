@@ -1,4 +1,5 @@
 import type { AddResult, RollbackFailure } from '../../application/add';
+import { ERROR_CODES } from '../../shared/error-codes';
 import { theme } from '../theme';
 
 export function formatAddResult(result: AddResult): { stdout: string; stderr: string } {
@@ -10,42 +11,42 @@ export function formatAddResult(result: AddResult): { stdout: string; stderr: st
   }
 
   switch (result.code) {
-    case 'NO_RULES_GIVEN':
+    case ERROR_CODES.NO_RULES_GIVEN:
       return {
         stdout: '',
         stderr: `${theme.error('At least one rule is required. Usage: rulebox add <rule>...')}\n`,
       };
-    case 'CONFIG_NOT_FOUND':
+    case ERROR_CODES.CONFIG_NOT_FOUND:
       return {
         stdout: '',
         stderr: `${theme.error('rulebox.json not found. Run `rulebox init` first.')}\n`,
       };
-    case 'INVALID_CONFIG_JSON':
+    case ERROR_CODES.INVALID_CONFIG_JSON:
       return {
         stdout: '',
         stderr: `${theme.error(`Invalid JSON in rulebox.json: ${result.details}`)}\n`,
       };
-    case 'INVALID_CONFIG_SCHEMA':
+    case ERROR_CODES.INVALID_CONFIG_SCHEMA:
       return {
         stdout: '',
         stderr: `${theme.error(`Invalid rulebox.json schema: ${result.details}`)}\n`,
       };
-    case 'OUTPUT_DIR_NOT_FOUND':
+    case ERROR_CODES.OUTPUT_DIR_NOT_FOUND:
       return {
         stdout: '',
         stderr: `${theme.error(`Output directory not found: ${result.path}`)}\n`,
       };
-    case 'UNKNOWN_RULES': {
+    case ERROR_CODES.UNKNOWN_RULES: {
       const header = theme.error('Unknown rule(s):');
       const items = result.rules.map((r) => `  - ${r}`).join('\n');
       return { stdout: '', stderr: `${header}\n${items}\n` };
     }
-    case 'IO_ERROR_WRITE_RULES':
+    case ERROR_CODES.IO_ERROR_WRITE_RULES:
       return {
         stdout: '',
         stderr: `${formatIoError('Failed to write rule files', result.message, result.rolledBack, result.partialRollbackFailures)}\n`,
       };
-    case 'IO_ERROR_WRITE_CONFIG':
+    case ERROR_CODES.IO_ERROR_WRITE_CONFIG:
       return {
         stdout: '',
         stderr: `${formatIoError('Failed to write rulebox.json', result.message, result.rolledBack, result.partialRollbackFailures)}\n`,
